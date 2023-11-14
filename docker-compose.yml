@@ -1,0 +1,31 @@
+version: '3.11'
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: DockerFile
+    container_name: backend
+    env_file:
+      - .env
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    networks:
+      - backend
+    volumes:
+      - .:/shop_api
+  postgres-db:
+    image: 'postgres:15'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: erkin
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: erkin551
+networks:
+  backend:
+    driver: bridge
+volumes:
+  postgres-data:
